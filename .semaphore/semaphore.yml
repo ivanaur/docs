@@ -1,40 +1,13 @@
 version: v1.0
-name: Docs
+name: Initial Pipeline
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu1804
+    os_image: ubuntu2004
 blocks:
-  - name: Make & push
+  - name: 'Block #1'
     task:
-      prologue:
-        commands:
-          - checkout
-
       jobs:
-        - name: Lint
+        - name: 'Job #1'
           commands:
-            - npm install markdownlint-cli2 markdownlint-cli2-formatter-junit --global
-            # Don't fail even if markdown linter detects issues
-            - markdownlint-cli2 "**/*.md" "#node_modules" || echo
-
-        - name: Mkdocs & Nginx
-          commands:
-            - make configure.gcloud
-            - make mkdocs.build
-            - make nginx.build
-            - make nginx.test
-            - make nginx.push
-
-      epilogue:
-        always:
-          commands:
-            - '[[ -f junit.xml ]] && test-results publish junit.xml'
-      secrets:
-        - name: container-registry-writer
-
-promotions:
-  - name: Production
-    pipeline_file: prod.yml
-    auto_promote:
-      when: "result = 'passed' and branch = 'master'"
+            - checkout
